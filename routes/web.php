@@ -1,8 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
+
+Route::get('/admins-only', function(){
+        return 'Welcome to the jungle, we got fun and games!';
+})->middleware('can:visitAdminPages');
 
 Route::get('/', [UserController::class, "showCorrectHomepage"])->name('login');
 Route::post('/register', [UserController::class, "register"])->middleware('guest');
