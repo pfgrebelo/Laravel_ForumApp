@@ -8,12 +8,23 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function logout(){
-        auth()->logout();
-        return redirect('/')->with('success','You have logged out!');;
+    public function profile(User $user)
+    {
+        return view('profile-posts', [
+            'username' => $user->username,
+            'posts' => $user->posts()->latest()->get(),
+            'postCount' => $user->posts()->count(),
+        ]);
     }
-    
-    public function showCorrectHomepage(){
+
+    public function logout()
+    {
+        auth()->logout();
+        return redirect('/')->with('success', 'You have logged out!');
+    }
+
+    public function showCorrectHomepage()
+    {
         if (auth()->check()) {
             return view('homepage-feed');
         } else {
@@ -31,9 +42,9 @@ class UserController extends Controller
 
         if (auth()->attempt(['username' => $incomingFields['loginusername'], 'password' => $incomingFields['loginpassword']])) {
             $request->session()->regenerate();
-            return redirect('/')->with('success','You have logged in!');
+            return redirect('/')->with('success', 'You have logged in!');
         } else {
-            return redirect('/')->with('error','Invalid login.');
+            return redirect('/')->with('error', 'Invalid login.');
         }
     }
 
@@ -47,6 +58,6 @@ class UserController extends Controller
         $incomingFields['password'] = bcrypt($incomingFields['password']);
         $user = User::create($incomingFields);
         auth()->login($user);
-        return redirect('/')->with('success','Thank you for registering!');
+        return redirect('/')->with('success', 'Thank you for registering!');
     }
 }
