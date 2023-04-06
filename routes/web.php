@@ -30,4 +30,7 @@ Route::delete('/post/{post}', [PostController::class, 'delete'])->middleware('ca
 Route::get('/post/{post}/edit', [PostController::class, 'showEditForm'])->middleware('can:update,post');
 Route::put('/post/{post}', [PostController::class, 'updatePost'])->middleware('can:update,post');
 
+// Profile related routes
 Route::get('/profile/{user:username}', [UserController::class, 'profile']);
+Route::get('/profile/{user:username}/followers', [UserController::class, 'profileFollowers']);
+Route::get('/profile/{user:username}/following', [UserController::class, 'profileFollowing']);
