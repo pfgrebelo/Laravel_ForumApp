@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :doctitle="$post->title">
   <div class="container py-md-5 container--narrow">
     <div class="d-flex justify-content-between">
       <h2>{{$post->title}}</h2>

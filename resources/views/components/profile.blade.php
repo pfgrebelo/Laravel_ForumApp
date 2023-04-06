@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :doctitle="$doctitle">
 
     <div class="container py-md-5 container--narrow">
         <h2>
