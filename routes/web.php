@@ -8,7 +8,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FollowController;
 
-Route::get('/admins-only', function(){
+Route::get('/admins-only', function () {
         return 'Welcome to the jungle, we got fun and games!';
 })->middleware('can:visitAdminPages');
 
@@ -38,20 +38,28 @@ Route::get('/profile/{user:username}', [UserController::class, 'profile']);
 Route::get('/profile/{user:username}/followers', [UserController::class, 'profileFollowers']);
 Route::get('/profile/{user:username}/following', [UserController::class, 'profileFollowing']);
 
+Route::middleware('cache.headers:public;max_age=20;etag')->group(function () {
+        Route::get('/profile/{user:username}/raw', [UserController::class, 'profileRaw']);
+        Route::get('/profile/{user:username}/followers/raw', [UserController::class, 'profileFollowersRaw']);
+        Route::get('/profile/{user:username}/following/raw', [UserController::class, 'profileFollowingRaw']);
+});
+
+
+
 // Chat route
-Route::post('/send-chat-message', function(Request $request){
+Route::post('/send-chat-message', function (Request $request) {
         $formFields = $request->validate([
-               'textvalue' => 'required'
+                'textvalue' => 'required'
         ]);
 
-        if(!trim(strip_tags($formFields['textvalue']))){
+        if (!trim(strip_tags($formFields['textvalue']))) {
                 return response()->noContent();
         }
 
         broadcast(new ChatMessage([
-                'username' => auth()->user()->username, 
+                'username' => auth()->user()->username,
                 'textvalue' => strip_tags($request->textvalue),
-                'avatar' => auth()->user()->avatar, 
+                'avatar' => auth()->user()->avatar,
         ]))->toOthers();
         return response()->noContent();
 })->middleware('mustBeLoggedIn');
